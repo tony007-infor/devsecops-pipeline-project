@@ -1,6 +1,5 @@
 name: DevSecOps CI Pipeline
 
-# El pipeline se ejecutará cada vez que hagamos "push" a la rama main
 on:
   push:
     branches:
@@ -8,14 +7,20 @@ on:
 
 jobs:
   build-and-test:
-    name: Construcción Base
-    runs-on: ubuntu-latest # Usaremos una máquina virtual con Ubuntu
+    name: Construcción y Análisis de Seguridad
+    runs-on: ubuntu-latest
 
     steps:
-      # Paso 3.1: Clonar el código del repositorio en la máquina virtual
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      # Paso 3.2: Construir la imagen Docker para validar que el Dockerfile funciona
+      # PASO 4: Análisis Estático de Código (SAST) con Semgrep
+      - name: Análisis Estático (SAST) con Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/default"
+        # Permite que el pipeline continúe aunque encuentre errores de seguridad, útil para fines académicos
+        continue-on-error: true
+
       - name: Construir imagen Docker
         run: docker build -t mi-app-vulnerable:latest .
