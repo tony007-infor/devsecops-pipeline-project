@@ -1,0 +1,21 @@
+name: DevSecOps CI Pipeline
+
+# El pipeline se ejecutará cada vez que hagamos "push" a la rama main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    name: Construcción Base
+    runs-on: ubuntu-latest # Usaremos una máquina virtual con Ubuntu
+
+    steps:
+      # Paso 3.1: Clonar el código del repositorio en la máquina virtual
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # Paso 3.2: Construir la imagen Docker para validar que el Dockerfile funciona
+      - name: Construir imagen Docker
+        run: docker build -t mi-app-vulnerable:latest .
