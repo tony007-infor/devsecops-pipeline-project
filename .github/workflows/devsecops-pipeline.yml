@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# NUEVO: Otorgar permisos para que OWASP ZAP pueda escribir el reporte en la pestaña "Issues"
+permissions:
+  issues: write
+  contents: read
+
 jobs:
   build-and-test:
     name: Construcción y Análisis Integral
@@ -34,15 +39,15 @@ jobs:
           exit-code: '0'
           severity: 'CRITICAL,HIGH'
 
-      # 4. Despliegue Efímero (NUEVO) - Levanta la app temporalmente
+      # 4. Despliegue Efímero
       - name: Levantar aplicación en entorno de pruebas
         run: |
           docker run -d -p 8080:80 --name app-seguridad mi-app-vulnerable:latest
-          sleep 10 # Espera 10 segundos para asegurar que el servidor Apache inicie correctamente
+          sleep 10 
 
-      # 5. Análisis Dinámico (DAST) (NUEVO) - Ataca la app en ejecución
+      # 5. Análisis Dinámico (DAST)
       - name: Análisis Dinámico (DAST) con OWASP ZAP
         uses: zaproxy/action-baseline@v0.12.0
         with:
           target: 'http://localhost:8080'
-          fail_action: false # Evita que el pipeline falle para que podamos ver el reporte completo
+          fail_action: false
