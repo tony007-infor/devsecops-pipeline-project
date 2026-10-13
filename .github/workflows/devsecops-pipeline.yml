@@ -45,11 +45,8 @@ jobs:
           docker run -d -p 8080:80 --name app-seguridad mi-app-vulnerable:latest
           sleep 10 
 
-      # 5. Análisis Dinámico (DAST)
-  # 5. Análisis Dinámico (DAST)
+# 5. Análisis Dinámico (DAST) ejecutando ZAP en Docker
       - name: Análisis Dinámico (DAST) con OWASP ZAP
-        uses: zaproxy/action-baseline@v0.12.0
-        with:
-          target: 'http://localhost:8080'
-          fail_action: false 
-        continue-on-error: true # Ignorará el fallo al guardar el artefacto
+        run: |
+          docker pull ghcr.io/zaproxy/zaproxy:stable
+          docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://localhost:8080 || true
